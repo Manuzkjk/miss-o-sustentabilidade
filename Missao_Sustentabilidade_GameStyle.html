@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Missão Sustentabilidade</title>
+    <style>
+        /* Estilização Geral baseada na imagem da floresta */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial Pop', sans-serif;
+            background: linear-gradient(to bottom, #4b8ce0, #132586);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #game-container {
+            width: 800px;
+            height: 500px;
+            background: #000000 url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=1000') no-repeat center center;
+            background-size: cover;
+            border: 8px solid #091661;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Tela de Início */
+        .menu-title {
+            font-size: 3.5rem;
+            color: #020520;
+            text-shadow: 3px 3px 0px #04012c, -3px -3px 0px #000000, 3px -3px 0px #07042e, -3px 3px 0px #404140;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .btn {
+            background-color: #535bce;
+            color: white;
+            border: 4px solid #fff;
+            border-radius: 15px;
+            padding: 12px 35px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0px #535bce;
+            transition: all 0.1s ease;
+            margin: 10px;
+        }
+
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+
+        /* Estrutura do Quiz */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        .quiz-box {
+            background: rgba(255, 255, 255, 0.95);
+            border: 5px solid #091661;
+            border-radius: 15px;
+            padding: 15px;
+            width: 85%;
+            max-width: 650px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container do Personagem */
+        .character-container {
+            height: 120px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .character-img {
+            height: 100%;
+            object-fit: contain;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .option-btn {
+            background-color: #00a8ff;
+            color: white;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #007bb5;
+        }
+
+        .option-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* Animações de Feedback (Erros e Acertos) */
+        .feedback-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+            z-index: 10;
+            border-radius: 12px;
+        }
+
+        .feedback-correct {
+            background-color: rgba(46, 204, 113, 0.9);
+            animation: popIn 0.5s forwards;
+        }
+
+        .feedback-wrong {
+            background-color: rgba(231, 76, 60, 0.9);
+            animation: shake 0.4s forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); opacity: 1; }
+            20%, 60% { transform: translateX(-20px); opacity: 1; }
+            40%, 80% { transform: translateX(20px); opacity: 1; }
+        }
+    </style>
+
+<style>
+body::before{
+content:"";
+position:fixed;inset:0;
+background:
+radial-gradient(circle at 20% 20%, rgba(255,255,255,.12) 2px, transparent 3px),
+radial-gradient(circle at 80% 40%, rgba(255,255,255,.1) 3px, transparent 4px),
+radial-gradient(circle at 60% 80%, rgba(255,255,255,.08) 2px, transparent 3px);
+animation: floatbg 18s linear infinite;
+pointer-events:none;
+}
+@keyframes floatbg{
+from{transform:translateY(0)}
+to{transform:translateY(-60px)}
+}
+body{
+background:linear-gradient(180deg,#001d3d,#003566,#0077b6,#00b4d8)!important;
+}
+#game-container{
+background:linear-gradient(180deg,rgba(0,29,61,.95),rgba(0,119,182,.85))!important;
+border:3px solid rgba(144,224,239,.7)!important;
+border-radius:30px!important;
+box-shadow:0 0 40px rgba(0,180,216,.5)!important;
+}
+#game-container::before{
+content:"🌊 🌊 🌊";
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+font-size:32px;
+opacity:.25;
+}
+.menu-title{
+color:white!important;
+text-shadow:0 0 15px rgba(0,180,216,.8)!important;
+}
+.btn{
+background:linear-gradient(135deg,#00b4d8,#0096c7)!important;
+border:none!important;
+box-shadow:0 8px 20px rgba(0,0,0,.3)!important;
+}
+.quiz-box{
+background:rgba(255,255,255,.95)!important;
+border:4px solid #90e0ef!important;
+border-radius:25px!important;
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.character-container{
+background:radial-gradient(circle,#caf0f8,#90e0ef);
+border-radius:50%;
+width:140px;
+box-shadow:0 0 25px rgba(0,180,216,.6);
+}
+.option-btn{
+background:linear-gradient(135deg,#2dc653,#168aad)!important;
+border:none!important;
+box-shadow:0 5px 12px rgba(0,0,0,.2);
+transition:.2s;
+}
+.option-btn:hover,.btn:hover{
+transform:scale(1.04);
+}
+</style>
+
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <div id="start-screen" class="screen active">
+            <h1 class="menu-title">Missão Sustentabilidade<br><span style="font-size: 1.6rem; color: #3300ff;">Guardiões da Água</span></h1>
+            <button class="btn" onclick="startGame()">CONTINUE</button>
+            <button class="btn" style="background-color: #531303; box-shadow: 0 5px 0px #531303;">EXIT</button>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="quiz-box">
+                <div class="character-container">
+                    <img id="character-sprite" class="character-img" src="" alt="Personagem">
+                </div>
+                <h2 id="question-text" style="color: #2f3640; margin: 5px 0; font-size: 1.2rem;">Carregando pergunta...</h2>
+                <div class="options-container" id="options-box">
+                    </div>
+            </div>
+        </div>
+
+        <div id="end-screen" class="screen">
+            <h1 class="menu-title" style="color: #fbc531;">Missão Cumprida!</h1>
+            <p id="score-text" style="color: white; font-size: 1.8rem; font-weight: bold;"></p>
+            <button class="btn" onclick="restartGame()">JOGAR DE NOVO</button>
+        </div>
+
+        <div id="feedback" class="feedback-overlay"></div>
+
+    </div>
+
+    <script>
+        // Agora o banco guarda as duas versões de imagem de cada personagem
+        const quizData = [
+            { 
+                neutro: "imagens/manu_neutro.png", 
+                triste: "imagens/manu_triste.png", 
+                question: "Qual destas atitudes gera o maior desperdício de água potável no dia a dia?", 
+                options: ["Lavar calçadas com a mangueira", "Usar regador para as plantas", "Tomar banhos rápidos de 5 minutos", "Lavar a louça com a torneira fechada"], 
+                correct: 0 
+            },
+            { 
+                neutro: "imagens/luana_neutro.png", 
+                triste: "imagens/luana_triste.png", 
+                question: "Qual é uma excelente alternativa sustentável para reduzir o consumo de água encanada no quintal?", 
+                options: ["Deixar as torneiras pingando", "Captar e usar a água da chuva", "Usar água mineral na limpeza", "Lavar o carro todo santo dia"], 
+                correct: 1 
+            },
+            { 
+                neutro: "imagens/enzo_neutro.png", 
+                triste: "imagens/enzo_triste.png", 
+                question: "Enquanto escovamos os dentes, qual é a ação correta para economizar água?", 
+                options: ["Deixar a torneira aberta no máximo", "Escovar os dentes embaixo do chuveiro", "Manter a torneira fechada", "Deixar a torneira gotejando"], 
+                correct: 2 
+            },
+            { 
+                neutro: "imagens/nathalie_neutro.png", 
+                triste: "imagens/nathalie_triste.png", 
+                question: "O que o descarte incorreto de óleo de cozinha na pia causa aos recursos hídricos?", 
+                options: ["Ajuda a purificar a água", "Polui milhares de litros de água", "Diminui a evaporação das chuvas", "Não causa nenhum impacto"], 
+                correct: 1 
+            },
+            { 
+                neutro: "imagens/manu_neutro.png", 
+                triste: "imagens/manu_triste.png", 
+                question: "Qual eletrodoméstico gasta menos água se for usado apenas na sua capacidade máxima?", 
+                options: ["A geladeira frost free", "O micro-ondas", "A máquina de lavar roupas", "O ferro de passar roupas"], 
+                correct: 2 
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startGame() {
+            document.getElementById("start-screen").classList.remove("active");
+            document.getElementById("quiz-screen").classList.add("active");
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentData = quizData[currentQuestionIndex];
+            
+            // Sempre começa a pergunta com a versão neutra
+            document.getElementById("character-sprite").src = currentData.neutro;
+            document.getElementById("question-text").innerText = currentData.question;
+            
+            const optionsBox = document.getElementById("options-box");
+            optionsBox.innerHTML = ""; 
+
+            currentData.options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.classList.add("option-btn");
+                button.innerText = option;
+                button.onclick = () => checkAnswer(index);
+                optionsBox.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const currentData = quizData[currentQuestionIndex];
+            const feedbackEl = document.getElementById("feedback");
+
+            feedbackEl.className = "feedback-overlay";
+
+            if (selectedIndex === currentData.correct) {
+                score++;
+                feedbackEl.innerText = "💥 ACERTOU! 💥";
+                feedbackEl.classList.add("feedback-correct");
+            } else {
+                // SE ERRAR: muda o sprite para a imagem triste antes do tremor de tela
+                document.getElementById("character-sprite").src = currentData.triste;
+                feedbackEl.innerText = "❌ ERROU! ❌";
+                feedbackEl.classList.add("feedback-wrong");
+            }
+
+            // Aguarda a animação e vai para a próxima pergunta
+            setTimeout(() => {
+                feedbackEl.className = "feedback-overlay"; 
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showEndScreen();
+                }
+            }, 1200); 
+        }
+
+        function showEndScreen() {
+            document.getElementById("quiz-screen").classList.remove("active");
+            document.getElementById("end-screen").classList.add("active");
+            document.getElementById("score-text").innerText = `Parabéns Guardião! Você acertou ${score} de ${quizData.length}!`;
+        }
+
+        function restartGame() {
+            document.getElementById("end-screen").classList.remove("active");
+            startGame();
+        }
+    </script>
+</body>
+</html>
